@@ -34,25 +34,24 @@ order by ciclo
 
 ```sql matxzonas
 select
-  zona_metropolitana as zona_metropolitana,
-
-  sum(primer_ingreso) filter (where ciclo = 2020) as "2020",
-  sum(primer_ingreso) filter (where ciclo = 2021) as "2021",
-  sum(primer_ingreso) filter (where ciclo = 2022) as "2022",
-  sum(primer_ingreso) filter (where ciclo = 2023) as "2023",
-  sum(primer_ingreso) filter (where ciclo = 2024) as "2024"
-
+  cast(coalesce(nullif(trim(zona_metropolitana), ''), 'Sin zona') as varchar) as zona_metropolitana,
+  sum(primer_ingreso) filter (where ciclo = 2020) as y2020,
+  sum(primer_ingreso) filter (where ciclo = 2021) as y2021,
+  sum(primer_ingreso) filter (where ciclo = 2022) as y2022,
+  sum(primer_ingreso) filter (where ciclo = 2023) as y2023,
+  sum(primer_ingreso) filter (where ciclo = 2024) as y2024
 from datos_zm
-where lower(control) != 'null'
+where control is not null
+  and lower(control) != 'null'
   and ciclo between 2020 and 2024
-group by zona_metropolitana
-order by zona_metropolitana
+group by 1
+order by 1
 ```
 <DataTable data={matxzonas} search={true}>
   <Column id="zona_metropolitana" title="Zona Metropolitana" />
-  <Column id="2020" />
-  <Column id="2021" />
-  <Column id="2022" />
-  <Column id="2023" />
-  <Column id="2024" />
+  <Column id="y2020" title="2020" />
+  <Column id="y2021" title="2021" />
+  <Column id="y2022" title="2022" />
+  <Column id="y2023" title="2023" />
+  <Column id="y2024" title="2024" />
 </DataTable>
